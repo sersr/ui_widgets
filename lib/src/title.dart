@@ -1,0 +1,21 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+class TitleWidget extends StatelessWidget {
+  const TitleWidget(this.title, {super.key, this.color = Colors.black});
+  final String title;
+  final Color color;
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      title,
+      style: TextStyle(
+        color: color,
+        fontSize: 21.sp,
+        fontWeight: FontWeight.bold,
+      ),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+}
