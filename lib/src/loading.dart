@@ -1,6 +1,5 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Loading extends StatelessWidget {
   const Loading({super.key, this.alignment});
@@ -11,9 +10,9 @@ class Loading extends StatelessWidget {
     return Container(
       alignment: alignment ?? Alignment.center,
       child: Container(
-        padding: EdgeInsets.all(16.r),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(6.r),
+          borderRadius: BorderRadius.circular(6),
           color: Colors.grey.shade800,
         ),
         child: const LoadingWidget.white(stop: false),
@@ -55,16 +54,16 @@ class LoadingWidget extends StatelessWidget {
     this.radius = 18,
     this.childRadius = 5,
   }) : colors = const [
-         Color.fromRGBO(255, 255, 255, 0.1),
-         Color.fromRGBO(255, 255, 255, 0.2),
-         Color.fromRGBO(255, 255, 255, 0.3),
-         Color.fromRGBO(255, 255, 255, 0.42),
-         Color.fromRGBO(255, 255, 255, 0.54),
-         Color.fromRGBO(255, 255, 255, 0.66),
-         Color.fromRGBO(255, 255, 255, 0.78),
-         Color.fromRGBO(255, 255, 255, 0.90),
-         Colors.white,
-       ];
+          Color.fromRGBO(255, 255, 255, 0.1),
+          Color.fromRGBO(255, 255, 255, 0.2),
+          Color.fromRGBO(255, 255, 255, 0.3),
+          Color.fromRGBO(255, 255, 255, 0.42),
+          Color.fromRGBO(255, 255, 255, 0.54),
+          Color.fromRGBO(255, 255, 255, 0.66),
+          Color.fromRGBO(255, 255, 255, 0.78),
+          Color.fromRGBO(255, 255, 255, 0.90),
+          Colors.white,
+        ];
   @override
   Widget build(BuildContext context) {
     final indColors = colors ?? _greyColors;

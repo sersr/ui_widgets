@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'button.dart';
 import 'image.dart';
@@ -138,12 +137,12 @@ class BaseDialog extends StatelessWidget {
     if (title case String title) {
       list.add(
         Padding(
-          padding: EdgeInsets.only(top: 6.h),
+          padding: const EdgeInsets.only(top: 6),
           child: Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.black,
-              fontSize: 21.sp,
+              fontSize: 21,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -154,12 +153,12 @@ class BaseDialog extends StatelessWidget {
     if (message case String message) {
       list.add(
         Padding(
-          padding: EdgeInsets.only(top: 14.h, left: 30.w, right: 30.w),
+          padding: const EdgeInsets.only(top: 14, left: 30, right: 30),
           child: Text(
             message,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.black,
-              fontSize: 14.sp,
+              fontSize: 14,
               fontWeight: FontWeight.w500,
             ),
             textAlign: TextAlign.center,
@@ -172,49 +171,49 @@ class BaseDialog extends StatelessWidget {
     }
 
     final content = Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10.w),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Column(mainAxisSize: MainAxisSize.min, children: list),
     );
 
     final buttons = Padding(
-      padding: EdgeInsets.symmetric(horizontal: 24.w),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
         children: [
           InkButton(
             onPressed: () {
               rightVoidCallback?.call();
             },
-            padding: EdgeInsets.symmetric(vertical: 14.h),
-            borderRadius: BorderRadius.circular(8.r),
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            borderRadius: BorderRadius.circular(8),
             backgroundColor: const Color(0xFF3573FC),
             overlayColor: const Color.fromARGB(44, 255, 255, 255),
             child: Center(
               child: Text(
                 rightLabel ?? '',
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 16.sp,
+                  fontSize: 16,
                   fontWeight: FontWeight.w500,
                 ),
               ),
             ),
           ),
-          SizedBox(height: 16.h),
+          const SizedBox(height: 16),
           InkButton(
             onPressed: () {
               leftVoidCallback?.call();
             },
-            padding: EdgeInsets.symmetric(vertical: 14.h),
-            borderRadius: BorderRadius.circular(8.r),
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            borderRadius: BorderRadius.circular(8),
             backgroundColor: Colors.transparent,
             overlayColor: const Color.fromARGB(44, 211, 211, 211),
-            side: BorderSide(color: const Color(0xFFDDDDDD), width: 1.r),
+            side: const BorderSide(color: Color(0xFFDDDDDD), width: 1),
             child: Center(
               child: Text(
                 leftLabel ?? '',
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.black,
-                  fontSize: 16.sp,
+                  fontSize: 16,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -224,9 +223,9 @@ class BaseDialog extends StatelessWidget {
       ),
     );
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 20.w),
+      margin: const EdgeInsets.symmetric(horizontal: 20),
       child: Material(
-        borderRadius: BorderRadius.circular(20.r),
+        borderRadius: BorderRadius.circular(20),
         clipBehavior: Clip.hardEdge,
         color: Colors.white,
         child: Stack(
@@ -234,24 +233,24 @@ class BaseDialog extends StatelessWidget {
             Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(height: 10.h),
+                const SizedBox(height: 10),
                 content,
-                SizedBox(height: 24.h),
+                const SizedBox(height: 24),
                 buttons,
-                SizedBox(height: 24.h),
+                const SizedBox(height: 24),
               ],
             ),
             // Positioned(
-            //   right: 20.w,
-            //   top: 20.w,
+            //   right: 20,
+            //   top: 20,
             //   child: SizedBox(
-            //     width: 24.w,
-            //     height: 24.w,
+            //     width: 24,
+            //     height: 24,
             //     child: OverflowBox(
-            //       maxHeight: 32.w,
-            //       maxWidth: 32.w,
-            //       minHeight: 32.w,
-            //       minWidth: 32.w,
+            //       maxHeight: 32,
+            //       maxWidth: 32,
+            //       minHeight: 32,
+            //       minWidth: 32,
             //       child: InkButton.text(
             //         onPressed: () {
             //           Get.back();
@@ -259,7 +258,7 @@ class BaseDialog extends StatelessWidget {
             //         padding: EdgeInsets.zero,
             //         child: getImage(
             //           'btn_close',
-            //           width: 24.w,
+            //           width: 24,
             //           fit: BoxFit.fitWidth,
             //         ),
             //       ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TitleWidget extends StatelessWidget {
   const TitleWidget(this.title, {super.key, this.color = Colors.black});
@@ -11,7 +10,7 @@ class TitleWidget extends StatelessWidget {
       title,
       style: TextStyle(
         color: color,
-        fontSize: 21.sp,
+        fontSize: 21,
         fontWeight: FontWeight.bold,
       ),
       maxLines: 1,

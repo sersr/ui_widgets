@@ -4,7 +4,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'loading.dart';
 
@@ -17,13 +16,12 @@ RunningDelegate buildDefaultRefresh(
   bool white = false,
 }) {
   return RunningDelegate(
-    maxExtent: maxExtent ?? 80.h,
+    maxExtent: maxExtent ?? 80,
     onRunning: onRunning,
     triggerMode: RefreshIndicatorTriggerMode.anywhere,
     builder: (context, offset, maxExtent, mode, running, success) {
       if (mode == RefreshLoadingMode.idle) return Container(color: color);
-      final stop =
-          !running &&
+      final stop = !running &&
           !success &&
           (mode.index < RefreshLoadingMode.running.index ||
               mode == RefreshLoadingMode.ignore);
@@ -47,7 +45,7 @@ RunningDelegate buildDefaultRefresh(
               Positioned.fill(
                 child: LayoutBuilder(
                   builder: (context, constraints) {
-                    final maxHeight = constraints.maxHeight + 2.h;
+                    final maxHeight = constraints.maxHeight + 2;
                     return OverflowBox(
                       minHeight: maxHeight,
                       maxHeight: maxHeight,
@@ -62,7 +60,7 @@ RunningDelegate buildDefaultRefresh(
                 child: OverflowBar(
                   overflowAlignment: OverflowBarAlignment.center,
                   children: [
-                    SizedBox(width: ScreenUtil().screenWidth, child: loading),
+                    SizedBox(width: double.infinity, child: loading),
                     // child,
                   ],
                 ),
@@ -82,7 +80,7 @@ RunningDelegate buildDefaultLoading(
   Color? color,
 }) {
   return RunningDelegate(
-    maxExtent: 60.h,
+    maxExtent: 60,
     onDragStart: onDragStart,
     onRunning: onRunning,
     triggerMode: RefreshIndicatorTriggerMode.onEdge,
@@ -99,14 +97,13 @@ RunningDelegate buildDefaultLoading(
                 overflowAlignment: OverflowBarAlignment.center,
                 children: [
                   SizedBox(
-                    width: ScreenUtil().screenWidth,
-                    child:
-                        white
-                            ? const LoadingWidget.white(stop: false)
-                            : const LoadingWidget(
-                              stop: false,
-                              // progress: (maxExtent - 36 - offset) / (maxExtent * 2),
-                            ),
+                    width: double.infinity,
+                    child: white
+                        ? const LoadingWidget.white(stop: false)
+                        : const LoadingWidget(
+                            stop: false,
+                            // progress: (maxExtent - 36 - offset) / (maxExtent * 2),
+                          ),
                   ),
                   // Text(
                   //   text,
@@ -372,15 +369,14 @@ extension RefreshLoadingModeActive on RefreshLoadingMode {
 
 typedef OnRunning = FutureOr<void> Function();
 
-typedef RefreshLoadingBuilder =
-    Widget Function(
-      BuildContext context,
-      double offset,
-      double maxExtent,
-      RefreshLoadingMode mode,
-      bool running,
-      bool success,
-    );
+typedef RefreshLoadingBuilder = Widget Function(
+  BuildContext context,
+  double offset,
+  double maxExtent,
+  RefreshLoadingMode mode,
+  bool running,
+  bool success,
+);
 
 class RunningDelegate {
   RunningDelegate({
@@ -557,8 +553,7 @@ abstract class _RefreshBase extends ChangeNotifier {
   bool getCanLoading(ScrollStartNotification n);
 
   void reset(ScrollStartNotification n) {
-    canLoading =
-        getCanLoading(n) ||
+    canLoading = getCanLoading(n) ||
         runningDelegate?.triggerMode == RefreshIndicatorTriggerMode.anywhere;
     if (!canLoading) return;
     _setMode(RefreshLoadingMode.dragStart);
@@ -611,8 +606,7 @@ abstract class _RefreshBase extends ChangeNotifier {
       if (notification.depth > 0) return false;
     }
     if (notification is ScrollMetricsNotification) {
-      short =
-          notification.metrics.maxScrollExtent <=
+      short = notification.metrics.maxScrollExtent <=
           notification.metrics.viewportDimension;
     }
 
@@ -745,46 +739,45 @@ class _RefreshLoadingWidgetState extends State<_RefreshLoadingWidget>
         _success = false;
         Future<void>? local;
 
-        local =
-            _runningWork = _runningWork.waitThen(() async {
-              if (!mounted) return;
-              bool refreshCondition() {
-                return controller == refreshBase &&
-                    refreshBase.runningDelegate == controller.runningDelegate &&
-                    refreshBase.runningDelegate?.onRunning == onRunning;
-              }
+        local = _runningWork = _runningWork.waitThen(() async {
+          if (!mounted) return;
+          bool refreshCondition() {
+            return controller == refreshBase &&
+                refreshBase.runningDelegate == controller.runningDelegate &&
+                refreshBase.runningDelegate?.onRunning == onRunning;
+          }
 
-              var failed = false;
-              if (refreshCondition()) {
-                try {
-                  final stop = Stopwatch()..start();
-                  await onRunning();
-                  final useTime = stop.elapsedMilliseconds;
-                  final max = running.maxDurationOnRunning.inMilliseconds;
-                  if (useTime < max) {
-                    await Future.delayed(Duration(milliseconds: max - useTime));
-                  }
-                } catch (e) {
-                  failed = true;
-                }
+          var failed = false;
+          if (refreshCondition()) {
+            try {
+              final stop = Stopwatch()..start();
+              await onRunning();
+              final useTime = stop.elapsedMilliseconds;
+              final max = running.maxDurationOnRunning.inMilliseconds;
+              if (useTime < max) {
+                await Future.delayed(Duration(milliseconds: max - useTime));
               }
-              if (_success != null) {
-                _success = _success! | !failed;
-              }
-              if (refreshCondition() &&
-                  controller.mode == RefreshLoadingMode.running) {
-                if (success) {
-                  controller._setMode(RefreshLoadingMode.done);
-                } else {
-                  controller._setMode(RefreshLoadingMode.failed);
-                }
-              } else {
-                controller._setMode(RefreshLoadingMode.done);
-              }
-              if (local == _runningWork) {
-                _runningWork = null;
-              }
-            });
+            } catch (e) {
+              failed = true;
+            }
+          }
+          if (_success != null) {
+            _success = _success! | !failed;
+          }
+          if (refreshCondition() &&
+              controller.mode == RefreshLoadingMode.running) {
+            if (success) {
+              controller._setMode(RefreshLoadingMode.done);
+            } else {
+              controller._setMode(RefreshLoadingMode.failed);
+            }
+          } else {
+            controller._setMode(RefreshLoadingMode.done);
+          }
+          if (local == _runningWork) {
+            _runningWork = null;
+          }
+        });
 
         break;
 

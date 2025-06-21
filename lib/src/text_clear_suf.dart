@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TextClearSufWidget extends StatelessWidget {
   const TextClearSufWidget({super.key, required this.controller, this.padding});
@@ -20,8 +19,8 @@ class TextClearSufWidget extends StatelessWidget {
           controller.text = '';
         },
         child: Container(
-          padding: padding ?? EdgeInsets.symmetric(horizontal: 10.w),
-          child: Icon(Icons.close_rounded, size: 24.r),
+          padding: padding ?? const EdgeInsets.symmetric(horizontal: 10),
+          child: const Icon(Icons.close_rounded, size: 24),
         ),
       ),
     );

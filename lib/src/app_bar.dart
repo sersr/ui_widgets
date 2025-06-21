@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class BaseAppBar extends StatelessWidget {
   const BaseAppBar({
@@ -24,8 +23,6 @@ class BaseAppBar extends StatelessWidget {
   final bool removeTop;
   final double middleSpacing;
 
-  static double get defaultHeight => ScreenUtil().statusBarHeight + 56.h;
-
   @override
   Widget build(BuildContext context) {
     Widget bar = NavigationToolbar(
@@ -36,7 +33,7 @@ class BaseAppBar extends StatelessWidget {
       middleSpacing: middleSpacing,
     );
 
-    final height = this.height ?? 56.h;
+    final height = this.height ?? 56;
     bar = SizedBox(height: height, child: bar);
 
     if (removeTop) {

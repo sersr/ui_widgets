@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'button.dart';
 
@@ -19,20 +18,20 @@ class BaseBackButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 56.h,
-      width: 56.h,
-      margin: EdgeInsets.only(left: 2.w),
+      height: 56,
+      width: 56,
+      margin: const EdgeInsets.only(left: 2),
       child: OverflowBox(
-        maxHeight: 60.h,
-        maxWidth: 60.h,
-        minHeight: 60.h,
-        minWidth: 60.h,
+        maxHeight: 60,
+        maxWidth: 60,
+        minHeight: 60,
+        minWidth: 60,
         child: InkButton(
           onPressed: onBack ?? () => Navigator.pop(context),
           backgroundColor: Colors.transparent,
           overlayColor: overlayColor,
           isStadium: true,
-          child: Icon(Icons.arrow_back_ios, color: color, size: 20.r),
+          child: Icon(Icons.arrow_back_ios, color: color, size: 20),
         ),
       ),
     );
@@ -55,9 +54,9 @@ class BaseBackClosedButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(left: 8.w),
-      height: 40.h,
-      width: 40.h,
+      margin: const EdgeInsets.only(left: 8),
+      height: 40,
+      width: 40,
       alignment: Alignment.center,
       child: AspectRatio(
         aspectRatio: 1.0,
@@ -66,7 +65,7 @@ class BaseBackClosedButton extends StatelessWidget {
           backgroundColor: Colors.transparent,
           overlayColor: overlayColor,
           isStadium: true,
-          child: Icon(Icons.arrow_back_ios, color: color, size: 20.r),
+          child: Icon(Icons.arrow_back_ios, color: color, size: 20),
         ),
       ),
     );
@@ -88,10 +87,10 @@ class BgBackButton extends StatelessWidget {
     if (!canBack) return const SizedBox();
 
     return Container(
-      margin: EdgeInsets.only(left: left ?? 14.w),
+      margin: EdgeInsets.only(left: left ?? 14),
       child: GestureDetector(
         onTap: () => Navigator.pop(context),
-        child: Icon(Icons.arrow_back_ios_new, size: 30.r, color: color),
+        child: Icon(Icons.arrow_back_ios_new, size: 30, color: color),
       ),
     );
   }
