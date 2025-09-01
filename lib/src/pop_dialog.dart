@@ -6,20 +6,22 @@ void popDialog(
   BuildContext context,
   Widget body, {
   Duration duration = const Duration(milliseconds: 2000),
-  Alignment? alignment = const Alignment(0, -0.2),
+  Alignment alignment = const Alignment(0, -0.2),
 }) {
   late final OverlayEntry entry;
   entry = OverlayEntry(
     builder: (context) {
       return _PopMessageEntry(
-        body: Container(alignment: alignment, child: body),
+        body: body,
         entry: entry,
+        alignment: alignment,
         duration: duration,
       );
     },
   );
 
-  final overlay = Overlay.maybeOf(context);
+  final overlay =
+      Overlay.maybeOf(context) ?? Navigator.maybeOf(context)?.overlay;
   if (overlay == null) return;
   overlay.insert(entry);
 }
@@ -29,12 +31,13 @@ class _PopMessageEntry extends StatefulWidget {
     required this.body,
     required this.entry,
     required this.duration,
+    this.alignment = const Alignment(0, -0.2),
   });
 
   final Widget body;
   final Duration duration;
   final OverlayEntry entry;
-
+  final Alignment alignment;
   @override
   State<_PopMessageEntry> createState() => __PopMessageEntryState();
 }
@@ -76,9 +79,12 @@ class __PopMessageEntryState extends State<_PopMessageEntry>
 
   @override
   Widget build(BuildContext context) {
-    return ScaleTransition(
-      scale: scale,
-      child: FadeTransition(opacity: fade, child: widget.body),
+    return Container(
+      alignment: widget.alignment,
+      child: ScaleTransition(
+        scale: scale,
+        child: FadeTransition(opacity: fade, child: widget.body),
+      ),
     );
   }
 }

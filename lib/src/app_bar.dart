@@ -33,7 +33,7 @@ class BaseAppBar extends StatelessWidget {
       middleSpacing: middleSpacing,
     );
 
-    final height = this.height ?? 56;
+    final height = this.height ?? 44;
     bar = SizedBox(height: height, child: bar);
 
     if (removeTop) {

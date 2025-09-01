@@ -17,6 +17,8 @@ class BaseBackButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (!Navigator.canPop(context)) return const SizedBox();
+
     return Container(
       height: 56,
       width: 56,
