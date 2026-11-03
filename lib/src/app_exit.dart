@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'pop_message.dart';
 
@@ -21,7 +21,7 @@ class _AppExitScopeState extends State<AppExitScope> {
     if (didPop) return;
 
     exit.value = true;
-    showMsgB('Press again to exit!');
+    showMsg('Press again to exit!');
     Timer(const Duration(milliseconds: 1000), () {
       exit.value = false;
     });
@@ -33,7 +33,7 @@ class _AppExitScopeState extends State<AppExitScope> {
     if (didPop) return;
 
     exit.value = true;
-    showMsgB('Press again to exit!');
+    showMsg('Press again to exit!');
     Timer(const Duration(milliseconds: 1000), () {
       exit.value = false;
     });

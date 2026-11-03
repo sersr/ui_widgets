@@ -1,21 +1,14 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
+import 'navigator_observer.dart';
 import 'pop_dialog.dart';
 
 String? _lastMsg;
 Timer? _timer;
 
-abstract final class GlobalContext {
-  static BuildContext? _context;
-  static BuildContext get context => _context!;
-  static void init(BuildContext context) {
-    _context = context;
-  }
-}
-
-void showMsgB(String text) {
+void showMsg(String text) {
   if (text.isEmpty) return;
   if (text == _lastMsg) return;
 
@@ -25,10 +18,10 @@ void showMsgB(String text) {
     _lastMsg = null;
   });
 
-  showMsg(text);
+  showMsgD(text);
 }
 
-void showMsg(String info, {Alignment? alignment, String? icon}) {
+void showMsgD(String info, {Alignment? alignment, String? icon}) {
   final child = Text(
     info,
     style: const TextStyle(
@@ -52,5 +45,5 @@ void showMsg(String info, {Alignment? alignment, String? icon}) {
     child: body,
   );
 
-  popDialog(GlobalContext._context!, body, alignment: Alignment.center);
+  popDialog(GlobalContext.context, body, alignment: Alignment.center);
 }

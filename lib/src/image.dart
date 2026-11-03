@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:math' show max;
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class AImage extends StatelessWidget {
   const AImage(
@@ -45,47 +48,98 @@ class AImage extends StatelessWidget {
   }
 }
 
-Widget loadImage(
-  String name, {
-  double? height,
-  double? width,
-  BoxFit? fit,
-  bool isCircle = false,
-  Widget? placeholder,
-  Color? color,
-}) {
-  color ??= const Color.fromARGB(33, 201, 201, 201);
-  late final child =
-      placeholder ??
-      Container(
-        height: height,
-        width: width,
-        decoration:
-            isCircle
-                ? ShapeDecoration(shape: const StadiumBorder(), color: color)
-                : null,
-        color: isCircle ? null : color,
-      );
 
-  if (name.isEmpty) return child;
 
-  final image = CachedNetworkImage(
-    imageUrl: name,
-    height: height,
-    width: width,
-    fit: fit,
-    fadeInDuration: const Duration(milliseconds: 300),
-    fadeOutDuration: const Duration(milliseconds: 500),
-    errorWidget: (context, url, error) {
-      return child;
-    },
-    placeholder: (context, url) {
-      return child;
-    },
-  );
+class NetImage extends StatelessWidget {
+  const NetImage(
+    this.name, {
+    super.key,
+    this.height,
+    this.width,
+    this.fit,
+    this.circle = false,
+    this.placeholder,
+    this.color = const Color.fromARGB(33, 201, 201, 201),
+    this.imageBuilder,
+    this.errorWidget,
+    this.progressIndicatorBuilder,
+    this.cacheKey,
+  });
 
-  return image;
+  final String name;
+  final double? height;
+  final double? width;
+  final BoxFit? fit;
+  final bool circle;
+  final Widget? placeholder;
+  final Color color;
+  final Widget Function(BuildContext context, Widget child)? imageBuilder;
+  final Widget? errorWidget;
+  final ProgressIndicatorBuilder? progressIndicatorBuilder;
+  final String? cacheKey;
+
+  @override
+  Widget build(BuildContext context) {
+    late final child =
+        placeholder ??
+        Container(
+          height: height,
+          width: width,
+          decoration: circle
+              ? ShapeDecoration(shape: const StadiumBorder(), color: color)
+              : null,
+          color: circle ? null : color,
+        );
+
+    if (name.isEmpty) return child;
+
+    // Decode at display size × DPR so list icons/avatars don't keep full-res bitmaps.
+    // Skip when size is unknown — caller may show full-bleed images.
+    final dpr = MediaQuery.devicePixelRatioOf(context);
+    final memW = width != null && width!.isFinite && width! > 0
+        ? max(1, (width! * dpr).round())
+        : null;
+    final memH = height != null && height!.isFinite && height! > 0
+        ? max(1, (height! * dpr).round())
+        : null;
+
+    final image = CachedNetworkImage(
+      key: key,
+      imageUrl: name,
+      height: height,
+      width: width,
+      fit: fit,
+      cacheKey: cacheKey,
+      memCacheWidth: memW,
+      memCacheHeight: memH,
+      fadeInDuration: const Duration(milliseconds: 300),
+      fadeOutDuration: const Duration(milliseconds: 500),
+      errorWidget: (context, url, error) {
+        return errorWidget ?? child;
+      },
+      progressIndicatorBuilder: progressIndicatorBuilder,
+      imageBuilder: imageBuilder != null
+          ? (context, imageProvider) => imageBuilder!(
+              context,
+              Image(
+                image: imageProvider,
+                fit: fit,
+                width: width,
+                height: height,
+              ),
+            )
+          : null,
+      placeholder: progressIndicatorBuilder != null
+          ? null
+          : (context, url) {
+              return child;
+            },
+    );
+
+    return image;
+  }
 }
+
 
 /// 获取图片宽高，加载错误情况返回 Rect.zero.（单位 px）
 Future<Rect> getImageWH({
@@ -144,4 +198,179 @@ Future<Rect> getImageWH({
     return SynchronousFuture(rect!);
   }
   return completer.future;
+}
+
+
+
+class SvgImage extends StatelessWidget {
+  const SvgImage(
+    this.name, {
+    super.key,
+    this.height,
+    this.width,
+    this.fit,
+    this.color,
+    this.alignment,
+    this.placeholder,
+    this.builder,
+  });
+
+  final String name;
+  final double? height;
+  final double? width;
+  final BoxFit? fit;
+  final ColorFilter? color;
+  final Alignment? alignment;
+  final Widget? placeholder;
+  final ImageFrameBuilder? builder;
+
+  @override
+  Widget build(BuildContext context) {
+    return SvgPicture.asset(
+      name,
+      key: key,
+      height: height,
+      width: width,
+      colorFilter: color,
+      fit: fit ?? BoxFit.contain,
+      alignment: alignment ?? Alignment.center,
+      errorBuilder: (context, error, stackTrace) {
+        return placeholder ?? SizedBox(height: height, width: width);
+      },
+      package: 'common',
+    );
+  }
+}
+
+class SvgNetImage extends StatelessWidget {
+  const SvgNetImage(
+    this.name, {
+    super.key,
+    this.height,
+    this.width,
+    this.fit,
+    this.color,
+    this.alignment,
+    this.placeholder,
+    this.builder,
+  });
+
+  final String name;
+  final double? height;
+  final double? width;
+  final BoxFit? fit;
+  final ColorFilter? color;
+  final Alignment? alignment;
+  final Widget? placeholder;
+  final ImageFrameBuilder? builder;
+
+  @override
+  Widget build(BuildContext context) {
+    // return CachedNetworkSVGImage(
+    //   name,
+    //   height: height,
+    //   width: width,
+    //   fit: fit ?? BoxFit.contain,
+    //   alignment: alignment ?? Alignment.center,
+    //   placeholder: placeholder,
+    //   colorFilter: color,
+    //   errorWidget: placeholder ?? SizedBox(height: height, width: width),
+    // );
+    return SvgPicture.network(
+      name,
+      key: key,
+      height: height,
+      width: width,
+      colorFilter: color,
+      fit: fit ?? BoxFit.contain,
+      alignment: alignment ?? Alignment.center,
+      errorBuilder: (context, error, stackTrace) {
+        return placeholder ?? SizedBox(height: height, width: width);
+      },
+    );
+  }
+}
+
+class SvgFileImage extends StatelessWidget {
+  const SvgFileImage(
+    this.file, {
+    super.key,
+    this.height,
+    this.width,
+    this.fit,
+    this.color,
+    this.alignment,
+    this.placeholder,
+    this.builder,
+  });
+
+  final String file;
+
+  final double? height;
+  final double? width;
+  final BoxFit? fit;
+  final ColorFilter? color;
+  final Alignment? alignment;
+  final Widget? placeholder;
+  final ImageFrameBuilder? builder;
+
+  @override
+  Widget build(BuildContext context) {
+    return SvgPicture.file(
+      File(file),
+      key: key,
+      height: height,
+      width: width,
+      colorFilter: color,
+      fit: fit ?? BoxFit.contain,
+      alignment: alignment ?? Alignment.center,
+      errorBuilder: (context, error, stackTrace) {
+        return placeholder ?? SizedBox(height: height, width: width);
+      },
+    );
+  }
+}
+
+class SvgStrImage extends StatelessWidget {
+  const SvgStrImage(
+    this.svgStr, {
+    super.key,
+    this.height,
+    this.width,
+    this.fit,
+    this.color,
+    this.alignment,
+    this.placeholder,
+    this.builder,
+  });
+
+  final String svgStr;
+
+  final double? height;
+  final double? width;
+  final BoxFit? fit;
+  final ColorFilter? color;
+  final Alignment? alignment;
+  final Widget? placeholder;
+  final ImageFrameBuilder? builder;
+
+  @override
+  Widget build(BuildContext context) {
+    if (svgStr.isEmpty) {
+      return placeholder ?? SizedBox(height: height, width: width);
+    }
+
+    return SvgPicture.string(
+      svgStr,
+      key: key,
+      height: height,
+      width: width,
+      colorFilter: color,
+      fit: fit ?? BoxFit.contain,
+      alignment: alignment ?? Alignment.center,
+      errorBuilder: (context, error, stackTrace) {
+        return placeholder ?? SizedBox(height: height, width: width);
+      },
+    );
+  }
 }

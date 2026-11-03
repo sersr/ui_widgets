@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
+
+import 'ext/screen_ext.dart';
 
 import 'loading.dart';
 
@@ -16,11 +18,42 @@ RunningDelegate buildDefaultRefresh(
   bool white = false,
 }) {
   return RunningDelegate(
-    maxExtent: maxExtent ?? 80,
+    maxExtent: maxExtent ?? 80.h,
     onRunning: onRunning,
     triggerMode: RefreshIndicatorTriggerMode.anywhere,
     builder: (context, offset, maxExtent, mode, running, success) {
       if (mode == RefreshLoadingMode.idle) return Container(color: color);
+      // String text = '';
+      // if (success) {
+      //   text = 'refresh_success'.tr;
+      // } else if (running) {
+      //   text = 'refreshing'.tr;
+      // } else {
+      //   switch (mode) {
+      //     case RefreshLoadingMode.running:
+      //       text = 'refreshing'.tr;
+      //       break;
+      //     case RefreshLoadingMode.done:
+      //       text = 'refresh_done'.tr;
+      //       break;
+      //     case RefreshLoadingMode.ignore:
+      //       text = 'refresh_cancel'.tr;
+      //       break;
+      //     case RefreshLoadingMode.dragEnd:
+      //       text = 'refresh_release'.tr;
+      //       break;
+      //     case RefreshLoadingMode.dragStart:
+      //     case RefreshLoadingMode.idle:
+      //       text = 'refresh_drag'.tr;
+      //       break;
+      //     case RefreshLoadingMode.failed:
+      //       text = 'refresh_failed'.tr;
+      //       break;
+      //     default:
+      //   }
+      // }
+
+      // final child = Text(text, style: TextStyle(color: color));
       final stop = !running &&
           !success &&
           (mode.index < RefreshLoadingMode.running.index ||
@@ -45,7 +78,7 @@ RunningDelegate buildDefaultRefresh(
               Positioned.fill(
                 child: LayoutBuilder(
                   builder: (context, constraints) {
-                    final maxHeight = constraints.maxHeight + 2;
+                    final maxHeight = constraints.maxHeight + 2.h;
                     return OverflowBox(
                       minHeight: maxHeight,
                       maxHeight: maxHeight,
@@ -80,18 +113,48 @@ RunningDelegate buildDefaultLoading(
   Color? color,
 }) {
   return RunningDelegate(
-    maxExtent: 60,
+    maxExtent: 60.h,
     onDragStart: onDragStart,
     onRunning: onRunning,
     triggerMode: RefreshIndicatorTriggerMode.onEdge,
     builder: (context, offset, maxExtent, mode, running, success) {
       if (mode == RefreshLoadingMode.idle) return const SizedBox();
+      // ignore: unused_local_variable
+      // late String text;
+      // if (success) {
+      //   text = 'load_done'.tr;
+      // } else if (running) {
+      //   text = 'loading'.tr;
+      // } else {
+      //   switch (mode) {
+      //     case RefreshLoadingMode.done:
+      //       text = 'load_done'.tr;
+      //       break;
+      //     case RefreshLoadingMode.running:
+      //     // child = Text('loading'.tr);
+      //     // break;
+      //     case RefreshLoadingMode.ignore:
+      //     // child = Text('load_cancel'.tr);
+      //     // break;
+      //     case RefreshLoadingMode.dragEnd:
+      //     // child = Text('load_release'.tr);
+      //     // break;
+      //     case RefreshLoadingMode.dragStart:
+      //     case RefreshLoadingMode.idle:
+      //       text = 'loading'.tr;
+      //       break;
+      //     case RefreshLoadingMode.failed:
+      //       text = 'load_failed'.tr;
+      //       break;
+      //     default:
+      //   }
+      // }
 
+      // text = '';
       return RepaintBoundary(
         child: Align(
           alignment: const Alignment(0, -0.5),
           child: ClipRect(
-            // child: child,
             child: Center(
               child: OverflowBar(
                 overflowAlignment: OverflowBarAlignment.center,
@@ -149,14 +212,13 @@ class Refresh extends StatefulWidget {
   final bool? primary;
   final Key? center;
   final double anchor;
-  final double? cacheExtent;
+  final ScrollCacheExtent? cacheExtent;
   final int? semanticChildCount;
   final DragStartBehavior dragStartBehavior;
   final Widget? emptyWidget;
   final Future<void> Function()? preLoad;
   final List<SliverOverlapAbsorberHandle>? handles;
   final bool isEmpty;
-  // final Widget Function(Widget child, ScrollPhysics physics)? builder;
 
   @override
   State<Refresh> createState() => _RefreshState();
@@ -181,8 +243,8 @@ class _RefreshState extends State<Refresh> {
     loading._setDelegate(widget.loading);
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       final render = _spaceKey.currentContext?.findRenderObject();
-      if (render case RenderSliverFillRemaining sliver) {
-        if (sliver.geometry?.hasVisualOverflow case true) {
+      if (render is RenderSliverFillRemaining) {
+        if (render.geometry?.hasVisualOverflow == true) {
           final position =
               Scrollable.maybeOf(_spaceKey.currentContext!)?.position;
           position?.jumpTo(position.maxScrollExtent);
@@ -194,10 +256,10 @@ class _RefreshState extends State<Refresh> {
   Future<void>? _task;
 
   void _update(ScrollMetrics metrics) {
-    if (widget.preLoad case Future<void> Function() preLoad) {
+    if (widget.preLoad is Future<void> Function()) {
       if (metrics.maxScrollExtent <= metrics.pixels + 80) {
         if (_task == null) {
-          _task = preLoad();
+          _task = widget.preLoad!();
           _task!.whenComplete(() {
             Future.delayed(
               const Duration(milliseconds: 600),
@@ -219,20 +281,31 @@ class _RefreshState extends State<Refresh> {
 
   @override
   Widget build(BuildContext context) {
+    return LayoutBuilder(builder: buildView);
+  }
+
+  Widget buildView(BuildContext context, BoxConstraints constraints) {
     final slivers = <Widget>[];
 
     int start = 0;
-    if (widget.handles case List<SliverOverlapAbsorberHandle> list) {
-      for (var handle in list) {
+    if (widget.handles is List<SliverOverlapAbsorberHandle>) {
+      for (var handle in widget.handles!) {
         slivers.add(SliverOverlapInjector(handle: handle));
       }
-      start = list.length;
+      start = widget.handles!.length;
     }
 
     slivers.addAll(widget.slivers);
 
     if (slivers.isEmpty || widget.isEmpty) {
-      slivers.add(SliverToBoxAdapter(child: widget.emptyWidget));
+      slivers.add(
+        SliverToBoxAdapter(
+          child: ConstrainedBox(
+            constraints: constraints,
+            child: widget.emptyWidget,
+          ),
+        ),
+      );
     }
     if (refresh.runningDelegate != null) {
       slivers.insert(
@@ -281,7 +354,7 @@ class _RefreshState extends State<Refresh> {
         center: widget.center,
         anchor: widget.anchor,
         physics: physics,
-        cacheExtent: widget.cacheExtent,
+        scrollCacheExtent: widget.cacheExtent,
         semanticChildCount: widget.semanticChildCount,
         // emptyWidget: widget.emptyWidget,
       ),
@@ -442,7 +515,7 @@ class _Refresh extends _RefreshBase {
 
     final isAtEdge = mes.extentBefore == 0.0;
     final overscroll = n.overscroll;
-    // print('...... $overscroll | $isAtEdge | $value');
+    //logDev.w('...... $overscroll | $isAtEdge | $value');
     if (overscroll < 0 || (isAtEdge && value > 0.0)) {
       final newValue = (value - overscroll).clamp(0.0, maxExtent);
 
@@ -489,7 +562,7 @@ class _Loading extends _RefreshBase {
     // if (n.dragDetails == null) return;
     final isAtEdge = mes.extentAfter == 0.0;
     final overscroll = n.overscroll;
-    // print('......onOverScroll $overscroll | $isAtEdge | $value');
+    //logDev.w('......onOverScroll $overscroll | $isAtEdge | $value');
     if (overscroll > 0 || (isAtEdge && value > 0.0)) {
       final oldValue = value;
       final newValue = (value + overscroll).clamp(0.0, maxExtent);
@@ -498,7 +571,7 @@ class _Loading extends _RefreshBase {
       //   // 在帧后回调中检查
       //   SchedulerBinding.instance?.addPostFrameCallback((timeStamp) {
       //     final position = Scrollable.of(n.context!)?.position;
-      //     print('.... ${position?.pixels}  ${position?.maxScrollExtent}');
+      //    logDev.w('.... ${position?.pixels}  ${position?.maxScrollExtent}');
       //   });
       //   return true;
       // }());
@@ -585,11 +658,11 @@ abstract class _RefreshBase extends ChangeNotifier {
   );
   RefreshLoadingMode get mode => _mode.value;
 
-  addModeListener(VoidCallback listener) {
+  void addModeListener(VoidCallback listener) {
     _mode.addListener(listener);
   }
 
-  removeModeListener(VoidCallback listener) {
+  void removeModeListener(VoidCallback listener) {
     _mode.removeListener(listener);
   }
 
@@ -822,7 +895,7 @@ class _RefreshLoadingWidgetState extends State<_RefreshLoadingWidget>
     final scheduler = SchedulerBinding.instance;
     // assert(() {
     //   // ignore: avoid_print
-    //   print(scheduler.schedulerPhase.name.padRight(30, '.').padLeft(60, '.'));
+    //  logDev.w(scheduler.schedulerPhase.name.padRight(30, '.').padLeft(60, '.'));
     //   return true;
     // }());
     switch (scheduler.schedulerPhase) {

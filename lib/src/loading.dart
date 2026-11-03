@@ -1,5 +1,8 @@
 import 'dart:math' as math;
-import 'package:flutter/material.dart';
+
+import 'package:material_ui/material_ui.dart';
+
+import 'ext/screen_ext.dart';
 
 class Loading extends StatelessWidget {
   const Loading({super.key, this.alignment});
@@ -10,9 +13,9 @@ class Loading extends StatelessWidget {
     return Container(
       alignment: alignment ?? Alignment.center,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.r),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(6),
+          borderRadius: BorderRadius.circular(6.r),
           color: Colors.grey.shade800,
         ),
         child: const LoadingWidget.white(stop: false),
@@ -21,16 +24,16 @@ class Loading extends StatelessWidget {
   }
 }
 
-final _greyColors = [
-  Colors.grey.shade100,
-  Colors.grey.shade200,
-  Colors.grey.shade300,
-  Colors.grey.shade400,
-  Colors.grey.shade500,
-  Colors.grey.shade600,
-  Colors.grey.shade700,
-  Colors.grey.shade800,
-  Colors.grey.shade900,
+const List<Color> _greyColors = [
+  .from(alpha: 0.9, red: 0, green: 0, blue: 0),
+  .from(alpha: 0.8, red: 0, green: 0, blue: 0),
+  .from(alpha: 0.7, red: 0, green: 0, blue: 0),
+  .from(alpha: 0.6, red: 0, green: 0, blue: 0),
+  .from(alpha: 0.5, red: 0, green: 0, blue: 0),
+  .from(alpha: 0.4, red: 0, green: 0, blue: 0),
+  .from(alpha: 0.3, red: 0, green: 0, blue: 0),
+  .from(alpha: 0.2, red: 0, green: 0, blue: 0),
+  .from(alpha: 0.1, red: 0, green: 0, blue: 0),
 ];
 
 class LoadingWidget extends StatelessWidget {
@@ -54,16 +57,16 @@ class LoadingWidget extends StatelessWidget {
     this.radius = 18,
     this.childRadius = 5,
   }) : colors = const [
-          Color.fromRGBO(255, 255, 255, 0.1),
-          Color.fromRGBO(255, 255, 255, 0.2),
-          Color.fromRGBO(255, 255, 255, 0.3),
-          Color.fromRGBO(255, 255, 255, 0.42),
-          Color.fromRGBO(255, 255, 255, 0.54),
-          Color.fromRGBO(255, 255, 255, 0.66),
-          Color.fromRGBO(255, 255, 255, 0.78),
-          Color.fromRGBO(255, 255, 255, 0.90),
-          Colors.white,
-        ];
+         Color.fromRGBO(255, 255, 255, 0.1),
+         Color.fromRGBO(255, 255, 255, 0.2),
+         Color.fromRGBO(255, 255, 255, 0.3),
+         Color.fromRGBO(255, 255, 255, 0.42),
+         Color.fromRGBO(255, 255, 255, 0.54),
+         Color.fromRGBO(255, 255, 255, 0.66),
+         Color.fromRGBO(255, 255, 255, 0.78),
+         Color.fromRGBO(255, 255, 255, 0.90),
+         Colors.white,
+       ];
   @override
   Widget build(BuildContext context) {
     final indColors = colors ?? _greyColors;

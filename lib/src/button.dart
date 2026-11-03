@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 
 VoidCallback? _wrapTap(VoidCallback? onTap) {
@@ -9,6 +9,7 @@ VoidCallback? _wrapTap(VoidCallback? onTap) {
   };
 }
 
+/// android 样式
 class InkButton extends ButtonStyleButton {
   const InkButton({
     super.key,
@@ -32,6 +33,7 @@ class InkButton extends ButtonStyleButton {
     this.elevation,
     this.feedback = false,
     this.shape,
+    this.splashFactory,
     required super.child,
   });
 
@@ -57,6 +59,7 @@ class InkButton extends ButtonStyleButton {
     this.elevation,
     this.feedback = false,
     this.shape,
+    this.splashFactory,
     required super.child,
   });
 
@@ -82,6 +85,7 @@ class InkButton extends ButtonStyleButton {
     this.elevation,
     this.feedback = false,
     this.shape,
+    this.splashFactory,
     required super.child,
   });
 
@@ -100,6 +104,7 @@ class InkButton extends ButtonStyleButton {
   final bool isStadium;
   final OutlinedBorder? shape;
 
+  final InteractiveInkFeatureFactory? splashFactory;
   @override
   VoidCallback? get onPressed {
     if (!feedback) return super.onPressed;
@@ -126,13 +131,16 @@ class InkButton extends ButtonStyleButton {
         backgroundColor ?? Colors.grey.shade200,
       ),
       foregroundColor: WidgetStatePropertyAll(forgegroundColor),
-      splashFactory: InkSplash.splashFactory,
+      splashFactory: splashFactory ?? InkRipple.splashFactory,
       shadowColor: const WidgetStatePropertyAll(null),
       shape: WidgetStatePropertyAll(
         shape ??
             (isStadium
                 ? StadiumBorder(side: side ?? BorderSide.none)
-                : RoundedRectangleBorder(borderRadius: borderRadius)),
+                : RoundedRectangleBorder(
+                    side: side ?? BorderSide.none,
+                    borderRadius: borderRadius,
+                  )),
       ),
     );
   }

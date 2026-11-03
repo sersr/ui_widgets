@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:ui_widgets/src/pop_message.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'loading.dart';
+import 'navigator_observer.dart';
 
 Future<void> showLoadingDialog({
   bool barrierDismissible = false,
@@ -57,7 +57,7 @@ Future<T> showDialogScope<T>(
   void back() {
     if (backed) return;
     backed = true;
-    if (isInit) Navigator.pop(GlobalContext.context);
+    if (isInit) Nav.back();
   }
 
   // 无操作

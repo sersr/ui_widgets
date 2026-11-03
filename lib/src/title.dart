@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class TitleWidget extends StatelessWidget {
   const TitleWidget(this.title, {super.key, this.color = Colors.black});
