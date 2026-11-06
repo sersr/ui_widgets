@@ -1,5 +1,5 @@
 import 'package:flutter/services.dart';
-import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
+import 'package:gal/gal.dart';
 // import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:material_ui/material_ui.dart';
@@ -50,7 +50,7 @@ abstract class ImagePickerUtils {
   }
 
   static Future<String> savePicture(Uint8List bytes, String name) async {
-    final result = await ImageGallerySaverPlus.saveImage(bytes, name: name);
+    final result = await Gal.putImageBytes(bytes, name: name);
     if (result case {'filePath': String filePath}) {
       return filePath;
     }
