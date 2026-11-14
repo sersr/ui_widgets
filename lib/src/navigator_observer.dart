@@ -28,4 +28,8 @@ abstract final class Nav {
   static double get statusBarHeight {
     return MediaQuery.paddingOf(GlobalContext.context).top;
   }
+
+  static double get bottomHeight {
+    return MediaQuery.paddingOf(GlobalContext.context).bottom;
+  }
 }
