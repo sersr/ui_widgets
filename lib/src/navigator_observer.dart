@@ -32,4 +32,7 @@ abstract final class Nav {
   static double get bottomHeight {
     return MediaQuery.paddingOf(GlobalContext.context).bottom;
   }
+  static double get gesBottomHeight {
+    return MediaQuery.viewInsetsOf(GlobalContext.context).bottom;
+  }
 }

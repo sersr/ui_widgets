@@ -43,15 +43,16 @@ class BaseBackButton extends StatelessWidget {
 /// 按钮范围比较小
 
 class BaseBackClosedButton extends StatelessWidget {
-  const BaseBackClosedButton({super.key})
+  const BaseBackClosedButton({super.key,this.onBack})
       : color = Colors.white,
         overlayColor = const Color.fromARGB(67, 236, 236, 236);
-  const BaseBackClosedButton.black({super.key})
+  const BaseBackClosedButton.black({super.key,this.onBack})
       : color = Colors.black,
         overlayColor = const Color.fromARGB(161, 203, 203, 203);
 
   final Color color;
   final Color overlayColor;
+  final VoidCallback? onBack;
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +64,7 @@ class BaseBackClosedButton extends StatelessWidget {
       child: AspectRatio(
         aspectRatio: 1.0,
         child: InkButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: onBack ?? () => Navigator.pop(context),
           backgroundColor: Colors.transparent,
           overlayColor: overlayColor,
           isStadium: true,
