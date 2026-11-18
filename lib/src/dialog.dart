@@ -20,13 +20,13 @@ Future<T?> showCenterDialog<T>(
   }
   return Navigator.push(
     context,
-    PageRouteBuilder(
+    _DialogPageRouteBuilder(
       settings: routeName != null ? RouteSettings(name: routeName) : null,
       barrierDismissible: barrierDismissible,
       barrierColor: barrierColor ?? Colors.black54,
       opaque: false,
       maintainState: true,
-      fullscreenDialog: true,
+      fullscreenDialog: false,
       transitionDuration: const Duration(milliseconds: 150),
       reverseTransitionDuration: const Duration(milliseconds: 150),
       pageBuilder: (context, animation, secondaryAnimation) {
@@ -58,6 +58,29 @@ class _AnimatedDialog extends StatefulWidget {
   final BoxConstraints? constraints;
   @override
   State<_AnimatedDialog> createState() => _AnimatedDialogState();
+}
+
+class _DialogPageRouteBuilder<T> extends PageRouteBuilder<T> {
+  new({
+    super.settings,
+    super.requestFocus,
+    required super.pageBuilder,
+    super.transitionsBuilder,
+    super.transitionDuration,
+    super.reverseTransitionDuration,
+    super.opaque,
+    super.barrierDismissible,
+    super.barrierColor,
+    super.barrierLabel,
+    super.maintainState,
+    super.fullscreenDialog,
+    super.allowSnapshotting,
+  });
+
+  @override
+  bool canTransitionTo(TransitionRoute<dynamic> nextRoute) {
+    return false;
+  }
 }
 
 class _AnimatedDialogState extends State<_AnimatedDialog> {
