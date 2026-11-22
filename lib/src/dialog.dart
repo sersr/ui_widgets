@@ -14,6 +14,8 @@ Future<T?> showCenterDialog<T>(
   bool barrierDismissible = true,
   Color? barrierColor,
   String? routeName,
+  Curve? curve,
+  Curve? reverseCurve,
 }) {
   if (dialogScopeBack != null) {
     dialogScopeBack!();
@@ -27,8 +29,8 @@ Future<T?> showCenterDialog<T>(
       opaque: false,
       maintainState: true,
       fullscreenDialog: false,
-      transitionDuration: const Duration(milliseconds: 150),
-      reverseTransitionDuration: const Duration(milliseconds: 150),
+      transitionDuration: const Duration(milliseconds: 220),
+      reverseTransitionDuration: const Duration(milliseconds: 220),
       pageBuilder: (context, animation, secondaryAnimation) {
         Widget body = child;
         if (useSafeArea) {
@@ -38,6 +40,8 @@ Future<T?> showCenterDialog<T>(
           constraints: constraints,
           animation: animation,
           alignment: alignment,
+          curve: curve,
+          reverseCurve: reverseCurve,
           child: body,
         );
       },
@@ -51,11 +55,15 @@ class _AnimatedDialog extends StatefulWidget {
     required this.child,
     required this.alignment,
     this.constraints,
+    this.curve,
+    this.reverseCurve,
   });
   final Animation<double> animation;
   final Widget child;
   final Alignment alignment;
   final BoxConstraints? constraints;
+  final Curve? curve;
+  final Curve? reverseCurve;
   @override
   State<_AnimatedDialog> createState() => _AnimatedDialogState();
 }
@@ -97,10 +105,11 @@ class _AnimatedDialogState extends State<_AnimatedDialog> {
   void update() {
     curvedAnimation = CurvedAnimation(
       parent: widget.animation,
-      curve: Curves.easeInOut,
+      curve: widget.curve ?? Curves.easeInOut,
+      reverseCurve: widget.reverseCurve,
     );
     scale = Tween(
-      begin: 0.8,
+      begin: 0.6,
       end: 1.0,
     ).chain(CurveTween(curve: Curves.easeInOut)).animate(widget.animation);
   }
